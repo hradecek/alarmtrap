@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Project settings -->
+  <groupId>sk.hradecek.alarms</groupId>
+  <artifactId>alarmtrap</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <description>Provides CLI for sending alarm as SNMP traps based on alarm mappings.</description>
+  <url>https://github.com/hradecek/alarmtrap</url>
+
+  <developers>
+    <developer>
+      <id>hradecek</id>
+      <name>Ivo Hradek</name>
+      <email>ivohradek@gmail.com</email>
+      <url>https://github.com/hradecek</url>
+    </developer>
+  </developers>
+
+  <properties>
+    <!-- General -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <cli.mainClass>com.hradecek.alarms.cli.MainCliApplication</cli.mainClass>
+    <version.java>11</version.java>
+    <!-- Graal version -->
+    <version.graal>20.1.0</version.graal>
+    <!-- SNMP libs -->
+    <version.snmp4j>3.4.1</version.snmp4j>
+    <!-- CLI libs -->
+    <version.picocli>4.3.2</version.picocli>
+    <!-- JSON libs -->
+    <version.jackson>2.11.0</version.jackson>
+    <!-- String generation from REGEX -->
+    <version.generex>1.0.2</version.generex>
+    <!-- Maven plugins -->
+    <version.maven.shade.plugin>3.2.4</version.maven.shade.plugin>
+    <version.maven.assembly.plugin>3.3.0</version.maven.assembly.plugin>
+    <version.maven.compiler.plugin>3.8.1</version.maven.compiler.plugin>
+  </properties>
+
+  <build>
+    <plugins>
+      <!-- Build fat JAR -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${version.maven.assembly.plugin}</version>
+        <configuration>
+          <finalName>${project.name}</finalName>
+          <archive>
+            <manifest>
+              <mainClass>${cli.mainClass}</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Build native image using Graal -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${version.maven.compiler.plugin}</version>
+        <configuration>
+          <release>${version.java}</release>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>info.picocli</groupId>
+              <artifactId>picocli-codegen</artifactId>
+              <version>${version.picocli}</version>
+            </path>
+          </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-Aproject=${project.groupId}/${project.artifactId}</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.graalvm.nativeimage</groupId>
+        <artifactId>native-image-maven-plugin</artifactId>
+        <version>${version.graal}</version>
+        <configuration>
+          <imageName>${project.name}</imageName>
+          <mainClass>${cli.mainClass}</mainClass>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>native-image</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- SNMP libs -->
+    <dependency>
+      <groupId>org.snmp4j</groupId>
+      <artifactId>snmp4j</artifactId>
+      <version>${version.snmp4j}</version>
+    </dependency>
+    <!-- CLI libs -->
+    <dependency>
+      <groupId>info.picocli</groupId>
+      <artifactId>picocli</artifactId>
+      <version>${version.picocli}</version>
+    </dependency>
+    <!-- JSON libs -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${version.jackson}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${version.jackson}</version>
+    </dependency>
+    <!-- String generation from REGEX -->
+    <dependency>
+      <groupId>com.github.mifmif</groupId>
+      <artifactId>generex</artifactId>
+      <version>${version.generex}</version>
+    </dependency>
+    <!-- Graal native image -->
+    <dependency>
+      <groupId>org.graalvm.nativeimage</groupId>
+      <artifactId>svm</artifactId>
+      <version>${version.graal}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+</project>

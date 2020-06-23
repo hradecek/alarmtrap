@@ -5,9 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <!-- Project settings -->
-  <groupId>sk.hradecek.alarms</groupId>
+  <groupId>com.hradecek.alarms</groupId>
   <artifactId>alarmtrap</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
   <description>Provides CLI for sending alarm as SNMP traps based on alarm mappings.</description>
   <url>https://github.com/hradecek/alarmtrap</url>
 
@@ -118,6 +118,7 @@
             <configuration>
               <imageName>${project.name}</imageName>
               <mainClass>${cli.mainClass}</mainClass>
+              <buildArgs>-H:ReflectionConfigurationFiles=../reflection-config.json</buildArgs>
             </configuration>
             <executions>
               <execution>

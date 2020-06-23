@@ -77,7 +77,7 @@ public class AlarmTrapCommand implements Callable<Integer> {
             System.out.println(createSnmpTrapCommand(alarmTrap));
         } else {
             alarmTrapSender.send(alarmTrap, parseAddress(), parsePort(), DEFAULT_COMMUNITY);
-            System.out.printf("Sent SNMP trap: '%s'", alarmTrap);
+            System.out.printf("Sent SNMP trap: '%s'\n", alarmTrap);
         }
 
         return 0;

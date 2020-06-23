@@ -97,4 +97,4 @@ TODOs:
  - separate [com.hradecek.alarms.cli](./src/main/java/com/hradecek/alarms/cli) to its own maven sub-module
  - implements `<TAB>` completion
  - multiple alarms with same name
- - native image not working due to reflection used in Jackson (needs to be whitelisted)
+

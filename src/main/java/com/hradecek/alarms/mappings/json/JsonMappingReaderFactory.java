@@ -16,7 +16,7 @@ public class JsonMappingReaderFactory {
      * @param path path to mapping directory or file
      * @return relevant alarm mappings reader
      */
-    public static AlarmMappingsReader create(final Path path) {
+    public static AlarmMappingsReader<Path> create(final Path path) {
         return Files.isDirectory(path) ? new JsonMappingDirectoryReader() : new JsonMappingFileReader();
     }
 }

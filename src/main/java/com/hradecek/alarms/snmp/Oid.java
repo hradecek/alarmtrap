@@ -24,4 +24,9 @@ public class Oid {
     public String oid() {
         return this.oid;
     }
+
+    @Override
+    public String toString() {
+        return oid;
+    }
 }

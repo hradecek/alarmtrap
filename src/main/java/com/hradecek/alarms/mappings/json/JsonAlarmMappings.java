@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents single JSON mapping file.
+ * Represents single JSON mappings.
  * <p>
- * Mapping file consists of single JSON object with OIDs as keys and mapped alarms as values.
+ * JSON mapping consists of single JSON object with OIDs as keys and mapped alarms as values.
  */
-public class JsonMappingFile implements AlarmMappings {
+public class JsonAlarmMappings implements AlarmMappings {
 
     private Map<Oid, AlarmMapping> mappings = new HashMap<>();
 

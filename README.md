@@ -2,19 +2,41 @@
 This tool provides simple CLI application (built using [picocli](https://picocli.info/))
 that can send proprietary SNMP traps based on provided so called *mapping files*.
 
-## Build CLI (native images included)
-`alarmtrap` is built using maven and [GraalVM](https://www.graalvm.org/).
+## Build CLI
 
-As native image is built in `install` maven step be sure maven is using GraalVM instead of JRE.
+### Fat JAR
+In order to build runnable fat-jar run:
 
-Run:
 ```shell
 $ mvn clean install
 ```
 
-After successful build, runnable native image `alarmtrap` and *fat-jar* `alarmtrap.jar` are present in `target/` folder.
+After successful build, *fat-jar* `alarmtrap.jar` is present in `target/` folder.
+It can be run using `java`, like so:
+```shell
+$ java -jar alarm.jar --help
+```
 
-## Run CLI
+### Native image
+In order to build runnable native-image using [GraalVM](https://www.graalvm.org/)
+
+```shell
+$ mvn clean install -Pnative-image
+```
+
+As native image is built in `install` maven step be sure maven is using GraalVM instead of JRE.
+
+After successful build, native image `alarmtrap` is present in `target/` folder.
+It can be run just like any other ordinary executable program:
+```shell
+$ ./alarmtrap --help
+```
+
+### Predefined mapping files
+Mapping files put into [`resources/mappings/`](./src/main/resources/mappings/) folder are pre-loaded in
+compile time and available together with files defined by `-m` option.
+
+## Running CLI
 For help run:
 ```shell
 $ alarmtrap --help
@@ -75,4 +97,4 @@ TODOs:
  - separate [com.hradecek.alarms.cli](./src/main/java/com/hradecek/alarms/cli) to its own maven sub-module
  - implements `<TAB>` completion
  - multiple alarms with same name
-
+ - native image not working due to reflection used in Jackson (needs to be whitelisted)

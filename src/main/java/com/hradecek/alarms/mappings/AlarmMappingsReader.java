@@ -1,12 +1,12 @@
 package com.hradecek.alarms.mappings;
 
 import java.io.IOException;
-import java.nio.file.Path;
 
 /**
  * Reads alarm mappings.
  */
-public interface AlarmMappingsReader {
+@FunctionalInterface
+public interface AlarmMappingsReader<T> {
 
     /**
      * Reads alarm mapping from provided {@code mappingsPath}.
@@ -15,5 +15,5 @@ public interface AlarmMappingsReader {
      * @return read alarm mappings
      * @throws IOException if alarm mappings cannot be read
      */
-    AlarmMappings readAlarmMappings(Path mappingsPath) throws IOException;
+    AlarmMappings readAlarmMappings(T mappingsPath) throws IOException;
 }

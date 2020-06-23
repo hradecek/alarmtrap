@@ -14,6 +14,7 @@ public class AlarmTrap {
 
     private final Oid oid;
 
+    private Oid componentOid;
     private String componentRegex;
     private String componentValue;
 
@@ -28,6 +29,8 @@ public class AlarmTrap {
 
     /**
      * Constructor.
+     * <p>
+     * Creates random component OID based on {@code componentRegex}.
      *
      * @param oid alarm SNMP trap OID
      * @param componentRegex component regex
@@ -35,6 +38,7 @@ public class AlarmTrap {
     public AlarmTrap(Oid oid, String componentRegex) {
         this.oid = oid;
         this.componentRegex = componentRegex;
+        this.componentOid = new Oid(new Generex(componentRegex).random());
     }
 
     /**
@@ -56,7 +60,7 @@ public class AlarmTrap {
     }
 
     /**
-     * Get random component OID based on specified regex and its specified component value.
+     * Get component OID with its specified component value.
      * <p>
      * Returns {@link Optional#empty()} if neither component regex nor component value were not specified.
      *
@@ -64,7 +68,18 @@ public class AlarmTrap {
      */
     public Optional<ComponentBinding> getComponentBinding() {
         return componentRegex != null && componentValue != null
-                ? Optional.of(new ComponentBinding(new Oid(new Generex(componentRegex).random()), componentValue))
+                ? Optional.of(new ComponentBinding(componentOid, componentValue))
                 : Optional.empty();
+    }
+
+    @Override
+    public String toString() {
+        final var string = new StringBuilder();
+        string.append("TrapOID= ").append(oid);
+        if (null != componentRegex && null != componentValue) {
+            string.append(",Component=(").append(componentOid).append(",").append(componentValue);
+        }
+
+        return string.toString();
     }
 }

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  *
  * @see JsonMappingFileReader
  */
-public class JsonMappingDirectoryReader implements AlarmMappingsReader {
+public class JsonMappingDirectoryReader implements AlarmMappingsReader<Path> {
 
     private static final String SUFFIX_JSON = ".json";
 
@@ -22,7 +22,7 @@ public class JsonMappingDirectoryReader implements AlarmMappingsReader {
 
     @Override
     public AlarmMappings readAlarmMappings(Path mappingsPath) throws IOException {
-        final var allMappings = new JsonMappingFile();
+        final var allMappings = new JsonAlarmMappings();
         for (var jsonFile : getJsonFiles(mappingsPath)) {
             allMappings.addAll(mappingFileReader.readAlarmMappings(jsonFile));
         }

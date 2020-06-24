@@ -60,15 +60,28 @@ Path to  mapping file or directory containing mapping files in JSON format.
 
 Default path is working directory.
 
-**`-c`** or **`--component`**
+**`-c`** or **`--component`** (multiple)
 
-Value to be used for random component generated based on regex found in mappings.
+Values to be used for random component generated based on regexes and OIDs found in mappings.
+
+In case of component is consisted of more than one regex e.g.:
+```
+"Component": "... %%(1\\.3\\.6\\.1\\.4\\.1.*)%% ... %%1.3.6.1.4.1%%"
+```
+
+you can specify list of values an each component OID will be replace by the value as found in list in order e.g.:
+```
+$ alarmtrap ... -c "hello" -c "world" ...
+```
+first regex OID will be generated randomly and its value will be `"hello"` and
+second OID will have value `"world"`.
 
 **`-s`** or **`--severity`**
 
 Specify alarm's severity. Must be one of:
 
  - `CLEARED` (default),
+ - `INDETERMINATE`,
  - `WARNING`,
  - `MINOR`,
  - `MAJOR`,
@@ -97,4 +110,5 @@ TODOs:
  - separate [com.hradecek.alarms.cli](./src/main/java/com/hradecek/alarms/cli) to its own maven sub-module
  - implements `<TAB>` completion
  - multiple alarms with same name
+ - additional information replacements - like component
 

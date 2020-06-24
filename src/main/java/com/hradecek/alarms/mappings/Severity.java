@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum Severity {
 
     CLEARED("Cleared"),
+    INDETERMINATE("Indeterminate"),
     WARNING("Warning"),
     MINOR("Minor"),
     MAJOR("Major"),

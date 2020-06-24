@@ -17,6 +17,7 @@ import picocli.CommandLine.Parameters;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 
@@ -46,8 +47,8 @@ public class AlarmTrapCommand implements Callable<Integer> {
             description = "Path to alarm mappings (either file or directory),%nDefault: working directory ('${DEFAULT-VALUE}').")
     protected Path mappingsPath = Paths.get(".");
 
-    @Option(names = { "-c", "--component"}, description = "String value for component.")
-    protected String component;
+    @Option(names = { "-c", "--components"}, description = "Values for OIDs in component.")
+    protected List<String> components;
 
     @Option(names = { "-s", "--severity" }, description = "${COMPLETION-CANDIDATES}%nDefault: ${DEFAULT-VALUE}.")
     protected Severity severity = Severity.CLEARED;
@@ -69,8 +70,8 @@ public class AlarmTrapCommand implements Callable<Integer> {
         final var alarmTrapMap = new AlarmTrapMap(alarmMappings);
         final var alarmTrap = alarmTrapMap.getAlarmTrap(alarmName, severity)
                                           .orElseThrow(() -> new AlarmNotFoundException(alarmName, severity));
-        if (component != null) {
-            alarmTrap.setComponentValue(component);
+        if (null != components) {
+            alarmTrap.setComponentValues(components.toArray(String[]::new));
         }
 
         if (isSnmptrapSimulation) {
@@ -98,9 +99,10 @@ public class AlarmTrapCommand implements Callable<Integer> {
         snmptrapCommandBuilder.address(parseAddress());
         snmptrapCommandBuilder.port(parsePort());
         snmptrapCommandBuilder.trapOid(alarmTrap.getOid());
-        alarmTrap.getComponentBinding()
-                 .ifPresent(component -> snmptrapCommandBuilder.addVariableBinding(component.getOid(),
-                                                                                   component.getValue()));
+        for (final var componentBinding : alarmTrap.getComponentBindings()) {
+            snmptrapCommandBuilder.addVariableBinding(componentBinding.getOid(), componentBinding.getValue());
+        }
+
         return snmptrapCommandBuilder.create();
     }
 

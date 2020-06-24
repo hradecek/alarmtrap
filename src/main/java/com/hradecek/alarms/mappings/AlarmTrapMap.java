@@ -1,9 +1,13 @@
 package com.hradecek.alarms.mappings;
 
+import com.hradecek.alarms.mappings.tags.MappingsTag;
+import com.hradecek.alarms.mappings.tags.TagsIterator;
 import com.hradecek.alarms.snmp.AlarmTrap;
 import com.hradecek.alarms.snmp.Oid;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,6 +16,8 @@ import java.util.Optional;
  * Maps alarm definitions found in provided mappings to their particular SNMP trap definitions.
  */
 public class AlarmTrapMap {
+
+    private final ComponentParser componentParser = new ComponentParser();
 
     private static class AlarmRecord {
 
@@ -53,7 +59,6 @@ public class AlarmTrapMap {
     }
 
     private final Map<AlarmRecord, AlarmTrap> alarmToOid = new HashMap<>();
-    private final ComponentParser componentParser = new ComponentParser();
 
     /**
      * Constructor.
@@ -76,9 +81,21 @@ public class AlarmTrapMap {
 
     private AlarmTrap alarmMappingToAlarmTrap(final Oid oid, final AlarmMapping alarmMapping) {
         if (alarmMapping.getComponent() != null) {
-            return new AlarmTrap(oid, componentParser.parseRegex(alarmMapping.getComponent()));
+            return new AlarmTrap(oid, componentParser.parseReplaceables(alarmMapping.getComponent()));
         }
         return new AlarmTrap(oid);
+    }
+
+    private static class ComponentParser {
+
+        public List<MappingsTag<?>> parseReplaceables(final String component) {
+            final List<MappingsTag<?>> tags = new ArrayList<>();
+            final var tagsIterator = new TagsIterator(component);
+            while (tagsIterator.hasNext()) {
+                tags.add(tagsIterator.next());
+            }
+            return tags;
+        }
     }
 
     /**

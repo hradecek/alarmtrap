@@ -19,12 +19,38 @@ public class JsonMappingDirectoryReader implements AlarmMappingsReader<Path> {
     private static final String SUFFIX_JSON = ".json";
 
     private final JsonMappingFileReader mappingFileReader = new JsonMappingFileReader();
+    private final boolean skipInvalid;
+
+    /**
+     * Constructor.
+     */
+    public JsonMappingDirectoryReader() {
+        this(false);
+    }
+
+    /**
+     * Constructor.
+     * <p>
+     * If {@code skipInvalid} is set to true invalid JSON files will be skipped and reading will continue
+     * with next files. Otherwise reading will end with exception.
+     *
+     * @param skipInvalid if true invalid JSON files will be skipped
+     */
+    public JsonMappingDirectoryReader(boolean skipInvalid) {
+        this.skipInvalid = skipInvalid;
+    }
 
     @Override
     public AlarmMappings readAlarmMappings(Path mappingsPath) throws IOException {
         final var allMappings = new JsonAlarmMappings();
         for (var jsonFile : getJsonFiles(mappingsPath)) {
-            allMappings.addAll(mappingFileReader.readAlarmMappings(jsonFile));
+            try {
+                allMappings.addAll(mappingFileReader.readAlarmMappings(jsonFile));
+            } catch (IOException exception) {
+                if (!skipInvalid) {
+                    throw exception;
+                }
+            }
         }
         return allMappings;
     }

@@ -35,6 +35,9 @@
     <version.jackson>2.11.0</version.jackson>
     <!-- Spring core -->
     <version.spring>5.2.7.RELEASE</version.spring>
+    <!-- Logging -->
+    <version.log4j.core>2.13.3</version.log4j.core>
+    <version.slf4j.api>2.0.0-alpha1</version.slf4j.api>
     <!-- String generation from REGEX -->
     <version.generex>1.0.2</version.generex>
     <!-- Maven plugins -->
@@ -118,15 +121,49 @@
             <configuration>
               <imageName>${project.name}</imageName>
               <mainClass>${cli.mainClass}</mainClass>
-              <buildArgs>-H:ReflectionConfigurationFiles=../reflection-config.json</buildArgs>
+              <buildArgs>
+                -H:ReflectionConfigurationFiles=../reflection-config.json
+                -H:+ReportExceptionStackTraces
+                -H:+ReportUnsupportedElementsAtRuntime
+              </buildArgs>
             </configuration>
             <executions>
               <execution>
+                <phase>package</phase>
                 <goals>
                   <goal>native-image</goal>
                 </goals>
               </execution>
             </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.2</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <id>jar</id>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <finalName>${project.artifactId}-${project.version}</finalName>
+            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -138,6 +175,17 @@
           <artifactId>svm</artifactId>
           <version>${version.graal}</version>
           <scope>provided</scope>
+        </dependency>
+        <!-- Logging - due to Spring core dependency -->
+        <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+          <version>${version.slf4j.api}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-core</artifactId>
+          <version>${version.log4j.core}</version>
         </dependency>
       </dependencies>
     </profile>

@@ -52,9 +52,9 @@ public class DefaultAlarmTrapSender implements AlarmTrapSender {
         pdu.add(new VariableBinding(SnmpConstants.sysUpTime, new OctetString(new Date().toString())));
         pdu.add(new VariableBinding(SnmpConstants.snmpTrapOID, new OID(alarmTrap.getOid().oid())));
         pdu.setType(PDU.NOTIFICATION);
-
-        alarmTrap.getComponentBinding()
-                 .ifPresent(componentBinding -> pdu.add(componentToVariableBinding(componentBinding)));
+        for (final var componentBinding : alarmTrap.getComponentBindings()) {
+            pdu.add(componentToVariableBinding(componentBinding));
+        }
 
         return pdu;
     }

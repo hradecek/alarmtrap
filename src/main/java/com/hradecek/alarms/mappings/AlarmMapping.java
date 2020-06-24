@@ -1,10 +1,12 @@
 package com.hradecek.alarms.mappings;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Represents alarm mapping defined in mapping files.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AlarmMapping {
 
     @JsonProperty("AdditionalInformation")

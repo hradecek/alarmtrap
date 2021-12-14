@@ -36,7 +36,7 @@
     <!-- Spring core -->
     <version.spring>5.2.7.RELEASE</version.spring>
     <!-- Logging -->
-    <version.log4j.core>2.13.3</version.log4j.core>
+    <version.log4j.core>2.16.0</version.log4j.core>
     <version.slf4j.api>2.0.0-alpha1</version.slf4j.api>
     <!-- String generation from REGEX -->
     <version.generex>1.0.2</version.generex>

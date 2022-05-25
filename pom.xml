@@ -34,7 +34,7 @@
     <!-- JSON libs -->
     <version.jackson>2.11.0</version.jackson>
     <!-- Spring core -->
-    <version.spring>5.2.7.RELEASE</version.spring>
+    <version.spring>5.2.22.RELEASE</version.spring>
     <!-- Logging -->
     <version.log4j.core>2.13.3</version.log4j.core>
     <version.slf4j.api>2.0.0-alpha1</version.slf4j.api>
